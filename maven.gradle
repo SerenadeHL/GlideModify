@@ -1,0 +1,24 @@
+apply plugin: 'maven'
+
+uploadArchives {
+    configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+            // 本地仓库路径
+            repository(url: 'http://nexus.zhizhi.fun/nexus/content/repositories/xiaodupi/') {
+                //用户名，密码
+                authentication(userName: 'admin', password: 'admin123')
+            }
+            pom.project {
+                // 唯一标识
+                groupId 'com.team108.plugin'
+                // 项目名称
+                artifactId libraryArtifactId
+                // 版本号
+                version libraryVersion
+                // 版本描述
+                description libraryDescription
+            }
+        }
+    }
+}
