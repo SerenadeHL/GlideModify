@@ -19,7 +19,7 @@ object JarModifier {
     fun modify(file: File, tmpDir: File): File {
         val inputJarFile = JarFile(file)
         val outputJarFile = File(tmpDir, file.name)
-        if (outputJarFile.exists()){
+        if (outputJarFile.exists()) {
             outputJarFile.delete()
         }
         val jarOutputStream = JarOutputStream(FileOutputStream(outputJarFile))
@@ -27,7 +27,6 @@ object JarModifier {
         println("outputJarFile=$outputJarFile")
         println("===================================")
         inputJarFile.entries().iterator().forEach { classFileEntry ->
-//            var isTarget = false
             val inputStream = inputJarFile.getInputStream(classFileEntry)
             jarOutputStream.putNextEntry(ZipEntry(classFileEntry.name))
             val byteArray =
@@ -37,7 +36,6 @@ object JarModifier {
                     val classWriter = ClassWriter(ClassWriter.COMPUTE_MAXS)
                     val classVisitor = GlideClassVisitor(classWriter)
                     classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES)
-//                    isTarget = true
                     println("修改 StreamLocalUriFetcher.class 结束")
                     classWriter.toByteArray()
                 } else {
@@ -46,24 +44,41 @@ object JarModifier {
             inputStream.close()
             jarOutputStream.write(byteArray)
             jarOutputStream.closeEntry()
-//            if (isTarget) {
-//                //生成新的Class文件
-//                val modifiedClassFile = File(tmpDir, classFileEntry.name)
-//                if (!modifiedClassFile.parentFile.exists()) {
-//                    modifiedClassFile.parentFile.mkdirs()
-//                }
-//                if (modifiedClassFile.exists()) {
-//                    modifiedClassFile.delete()
-//                }
-//                modifiedClassFile.createNewFile()
-//                val fos = FileOutputStream(modifiedClassFile)
-//                fos.write(byteArray)
-//                fos.close()
-//                println("modifiedClass=$modifiedClassFile")
-//            }
         }
         inputJarFile.close()
         jarOutputStream.close()
+
+        printJarInfo(file)
+        printJarInfo(outputJarFile)
+
         return outputJarFile
+    }
+
+    private fun printJarInfo(file: File) {
+        println()
+        println("**************************************************************")
+        println("******                                                  ******")
+        println("******               Print Jar Info Start               ******")
+        println("******                                                  ******")
+        println("**************************************************************")
+        println()
+
+        println("jar file path:$file")
+        val jarFile = JarFile(file)
+        println("jar class num:${jarFile.entries().toList().size}")
+
+        println("===================================printAllClass Start===================================")
+        jarFile.entries().iterator().forEach {
+            println(it.name)
+        }
+        println("===================================printAllClass End===================================")
+
+        println()
+        println("**************************************************************")
+        println("******                                                  ******")
+        println("******               Print Jar Info End                 ******")
+        println("******                                                  ******")
+        println("**************************************************************")
+        println()
     }
 }
