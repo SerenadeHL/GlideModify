@@ -34,14 +34,3 @@ uploadArchives {
         pom.version = '1.0.0'
     }
 }
-
-//ext {
-//    // 项目名称
-//    libraryArtifactId = 'glide-modify'
-//    // 版本描述
-//    libraryDescription = 'glide-modify 1.0.0'
-//    // 版本号
-//    libraryVersion = '1.0.0'
-//}
-//
-//apply from: '../maven.gradle'
